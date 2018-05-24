@@ -10,32 +10,33 @@ $buttonCreate_Click= {
 	if (-not $textbox1.Text)
 	{
 		[System.Windows.Forms.MessageBox]::Show($owner, 'Error, please enter information')
+	}
+	if (-not $textbox1.Text)
+	{
+		[System.Windows.Forms.MessageBox]::Show($owner, 'Error, please enter information')
 		#Throw 'No Username Specified'	 
 		
 		
+	}
+	
+	else
+	{
+		$name = $textbox1.Text
+		$Location = "C:\$name"
+		New-Item -ItemType directory -Path $Location
 		
-		
-		while ($switch -eq "True")
+		If ((Test-Path $Location) -eq $False)
 		{
-			
-			$name = $textbox1.Text
-			$Location = "C:\$name"
-			
-			if (!(Test-Path -Path $Location))
-			{
-				New-Item -ItemType directory -Path $Location
-				Write-Host "New folder created"
-				$switch = "False"
-			}
-			else
-			{
-				[System.Windows.Forms.MessageBox]::Show($owner, 'Folder Already Exists')
-				$switch = "False"
-			}
-			
-			
-		} 
-		
+			New-Item -ItemType directory -Path $Location
+		} # End of folder exists test
+		If ((Test-Path $LocationFile) -eq $False)
+		{
+			New-Item -Path $Location -Name "No212.txt" -ItemType File
+		} # End of file exist test
+		Else
+		{
+			"The $LocationFile is already there."
+		}
 		
 	}
 }
