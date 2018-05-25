@@ -1,16 +1,27 @@
 
+
 $formFolderCreator_Load={
 	#TODO: Initialize Form Controls here
 	
 }
 
+
+
+
+<#TODO:add user 
+
+assaign the user to a group to a local machine
+
+create the folder
+
+only give administration to user for the folder
+
+only close when all credentials are filled 
+#>
+
 $buttonCreate_Click= {
-	#TODO: Place custom script here
+	
 	$switch = "True"
-	if (-not $textbox1.Text)
-	{
-		[System.Windows.Forms.MessageBox]::Show($owner, 'Error, please enter information')
-	}
 	if (-not $textbox1.Text)
 	{
 		[System.Windows.Forms.MessageBox]::Show($owner, 'Error, please enter information')
@@ -23,20 +34,19 @@ $buttonCreate_Click= {
 	{
 		$name = $textbox1.Text
 		$Location = "C:\$name"
-		New-Item -ItemType directory -Path $Location
+		
 		
 		If ((Test-Path $Location) -eq $False)
 		{
 			New-Item -ItemType directory -Path $Location
 		} # End of folder exists test
-		If ((Test-Path $LocationFile) -eq $False)
-		{
-			New-Item -Path $Location -Name "No212.txt" -ItemType File
-		} # End of file exist test
 		Else
 		{
-			"The $LocationFile is already there."
+			[System.Windows.Forms.MessageBox]::Show($owner, 'Folder Already Exists')
+			
 		}
 		
 	}
+	
+	
 }
