@@ -1,7 +1,17 @@
 
 
+
 $formFolderCreator_Load={
 	#TODO: Initialize Form Controls here
+	
+	$compname = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
+	
+	Write-Host $compname
+	
+	
+	
+	
+	
 	
 }
 
@@ -27,18 +37,49 @@ $buttonCreate_Click= {
 		[System.Windows.Forms.MessageBox]::Show($owner, 'Error, please enter information')
 		#Throw 'No Username Specified'	 
 		
-		
 	}
 	
 	else
 	{
 		$name = $textbox1.Text
 		$Location = "C:\$name"
+		$compname = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
 		
 		
 		If ((Test-Path $Location) -eq $False)
 		{
 			New-Item -ItemType directory -Path $Location
+			
+			$Username = $textbox1.Text
+			$Password = $textbox2.Text
+			
+			$group = "Administrators"
+			
+			$adsi = [ADSI]"WinNT://$env:COMPUTERNAME"
+			$existing = $adsi.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Username }
+			
+			if ($existing -eq $null)
+			{
+				
+				Write-Host "Creating new local user $Username."
+				& NET USER $Username $Password /add /y /expires:never
+				
+				Write-Host "Adding local user $Username to $group."
+				& NET LOCALGROUP $group $Username /add
+				
+			}
+			else
+			{
+				Write-Host "Setting password for existing local user $Username."
+				$existing.SetPassword($Password)
+			}
+			
+			Write-Host "Ensuring password for $Username never expires."
+			& WMIC USERACCOUNT WHERE "Name='$Username'" SET PasswordExpires=FALSE
+			
+			
+			
+			
 		} # End of folder exists test
 		Else
 		{
@@ -49,4 +90,8 @@ $buttonCreate_Click= {
 	}
 	
 	
+	
+	
+	
 }
+
